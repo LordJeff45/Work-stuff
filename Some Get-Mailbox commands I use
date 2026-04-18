@@ -1,0 +1,30 @@
+Connect-ExchangeOnline ;; Connect-IPPSSession -EnableSearchOnlySession
+
+#Get info about calendar processing and change it
+
+Get-Mailbox -ResultSize Unlimited | Get-CalendarProcessing | Select-Object Identity, AutomateProcessing
+
+Get-Mailbox -ResultSize Unlimited | Set-CalendarProcessing -AutomateProcessing None
+
+#Enable autoexpanding archive and archive massively
+Get-Mailbox -Filter {ArchiveStatus -Eq "None" -AND RecipientTypeDetails -eq "UserMailbox"} | Enable-Mailbox -Archive | Enable-Mailbox  -AutoExpandingArchive
+
+#Get full info about archive and mailbox size
+
+Get-MailboxLocation -User $mailbox | %{Get-MailboxStatistics $_.Id} | ft MailboxGuid, *typedetail*, *itemsize*
+
+#Disable MAPI bulk
+Get-Mailbox -ResultSize Unlimited -RecipientTypeDetails UserMailbox | Set-CasMailbox -MAPIEnabled  $false
+
+#Make an audit and export it (for moves process)
+
+#Prior to that, make this:
+
+Get-Mailbox -Identity user@domain.com | FL AuditOwner* 
+Set-mailbox user@domain.com -AuditOwner @{add="Move"} 
+Get-Mailbox -ResultSize Unlimited -Filter{RecipientTypeDetails -eq "UserMailbox"} | set-mailbox -AuditOwner @{add="Move"} 
+
+
+
+$audit = Search-UnifiedAuditLog -StartDate **date** -EndDate **date** -Operations Move, MoveToDeletedItems -FreeText "**MESSAGE ID**"
+$audit.AuditData |ConvertFrom-Json | Export-Csv C:\Users\Mariana\Documents\audit.csv -NoTypeInformation
