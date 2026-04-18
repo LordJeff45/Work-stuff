@@ -15,7 +15,7 @@ $Parameters = @('ReceivedTime', 'PolicyType', 'PolicyName','SenderAddress', 'Rec
 
 Get-QuarantineMessage | fl $Parameters
 
-$Outfile = "<ubicacion del archivo preferida>.txt"
+#$Outfile = "<ubicacion del archivo preferida>.txt"
 
 $Parameters= @('Identity', 'Guid')
 Get-HostedContentFilterPolicy | ft $Parameters ;; Get-AntiPhishPolicy | ft $Parameters ;; 
