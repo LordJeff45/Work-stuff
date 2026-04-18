@@ -1,0 +1,23 @@
+
+Get-Mailbox -Identity User | Fl *Archive* (Validate Current Values Associated with Archive)
+ 
+
+
+ArchiveDatabase base values and current ArchiveDatabaseGuide are validated
+We disable archive from PowerShell by using 
+
+Disable-Mailbox -Identity user -Archive
+
+
+The ArchiveGuid becomes DisableArchiveGuid and DisabledArchiveDatabase
+Delete warning, Option A (Yes to All) must be accepted
+
+
+We run: 
+Set-Mailbox -Identity User -RemoveDisabledArchive
+
+
+Get-Mailbox -Identity User | Fl *Archive* (Validate Current Values Associated with Archive)
+
+
+
