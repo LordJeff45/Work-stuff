@@ -23,5 +23,5 @@ Get-MalwareFilterPolicy | ft $Parameters ;; Get-ATPProtectionPolicyRule | ft $Pa
 Get-EOPProtectionPolicyRule | ft $Parameters
 
 
-#Get Protection Alerts
+#Get Protection Alerts not created by systems
 Get-ProtectionAlert | Where-Object {$_.IsSystemRule -match "false"} | fl DistinguishedName, Name, Workload, Category,Comment, Policy, IsSystemRule
