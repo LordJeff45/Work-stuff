@@ -1,0 +1,22 @@
+
+	• Close previous sessions and clean up:
+ 
+try { Disconnect-ExchangeOnline -Confirm:$false } catch {}
+ 
+Get-PSSession | Where-Object { $_.ConfigurationName -like "Microsoft.Exchange" -or $_.Name -like "ExchangeOnline*" } | Remove-PSSession -ErrorAction SilentlyContinue
+ 
+	• Verify/Update the module:
+ 
+Install-Module ExchangeOnlineManagement -Scope CurrentUser -AllowClobber -Force
+ 
+	• Remove old versions:
+ 
+Get-Module ExchangeOnlineManagement -ListAvailable |
+ Where-Object {$_.Version -lt [Version]"3.9.0"} |
+ ForEach-Object { Uninstall-Module ExchangeOnlineManagement -RequiredVersion $_.Version -Force -ErrorAction SilentlyContinue }
+ 
+	• Connect to IPPSSession in Search-Only mode:
+ 
+Import-Module ExchangeOnlineManagement
+ 
+Connect-IPPSSession -EnableSearchOnlySession
