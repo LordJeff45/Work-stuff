@@ -1,0 +1,27 @@
+﻿#For Defender for Office 365
+
+#Getting O365 policies
+
+Connect-ExchangeOnline ;; Connect-IPPSsession
+
+#Antispam
+Get-HostedContentFilterPolicy | fl > C:\AntispamPolicy.txt
+Get-HostedContentFilterPolicy| fl ExchangeObjectId, GUID, Name
+
+#For getting which policy sent an email to the quarantine
+Get-QuarantineMessage | Out-GridView ReceivedTime, PolicyType, PolicyName 
+
+$Parameters = @('ReceivedTime', 'PolicyType', 'PolicyName','SenderAddress', 'RecipientAddress')
+
+Get-QuarantineMessage | fl $Parameters
+
+#$Outfile = "<ubicacion del archivo preferida>.txt"
+
+$Parameters= @('Identity', 'Guid')
+Get-HostedContentFilterPolicy | ft $Parameters ;; Get-AntiPhishPolicy | ft $Parameters ;; 
+Get-MalwareFilterPolicy | ft $Parameters ;; Get-ATPProtectionPolicyRule | ft $Parameters ;;
+Get-EOPProtectionPolicyRule | ft $Parameters
+
+
+#Get Protection Alerts
+Get-ProtectionAlert | Where-Object {$_.IsSystemRule -match "false"} | fl DistinguishedName, Name, Workload, Category,Comment, Policy, IsSystemRule
