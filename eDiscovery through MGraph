@@ -1,0 +1,50 @@
+<# Disclaimer:
+The sample scripts are not supported under any Microsoft standard support program or service. The sample scripts are provided AS IS without warranty of any kind. Microsoft further disclaims all implied warranties including, without limitation, any implied warranties of merchantability or of fitness for a particular purpose. The entire risk arising out of the use or performance of the sample scripts and documentation remains with you. In no event shall Microsoft, its authors, or anyone else involved in the creation, production, or delivery of the scripts be liable for any damages whatsoever (including, without limitation, damages for loss of business profits, business interruption, loss of business information, or other pecuniary loss) arising out of the use of or inability to use the sample scripts or documentation, even if Microsoft has been advised of the possibility of such damages.
+#>
+
+
+
+PS C:\Users\JEF-user1> Get-ServicePrincipal
+PS C:\Users\JEF-user1> New-ServicePrincipal -AppId "2a5fcb9d-6b7d-49cb-89d4-534dd8e6af5d" -ObjectId "e78db90b-64ff-43e9-bfa5-75e5945cebc9" -DisplayName "FirstGraphApiPermission"
+>>
+
+DisplayName                              ObjectId                                                                                                           AppId
+-----------                              --------                                                                                                           -----
+FirstGraphApiPermission                  e78db90b-64ff-43e9-bfa5-75e5945cebc9                                                                               2a5fcb9d-6b7d-49cb-89d4-534dd8e6af5d
+
+
+PS C:\Users\JEF-user1> Add-RoleGroupMember -Identity "eDiscoveryManager" -Member "e78db90b-64ff-43e9-bfa5-75e5945cebc9"
+PS C:\Users\JEF-user1> Get-RoleGroupMember -Identity "eDiscoveryManager"
+
+Name                    RecipientType
+----                    -------------
+admin                   MailUser
+Sith Admin              MailUser
+ASchwarz                MailUser
+Jeffry Schwartz         MailUser
+FirstGraphApiPermission MailUser
+FirstGraphApiPermission MailUser
+
+
+PS C:\Users\JEF-user1> Add-RoleGroupMember -Identity "eDiscoveryManager" -Member "e78db90b-64ff-43e9-bfa5-75e5945cebc9"
+PS C:\Users\JEF-user1> Get-RoleGroupMember -Identity "eDiscoveryManager"
+
+Name                    RecipientType
+----                    -------------
+admin                   MailUser
+Sith Admin              MailUser
+ASchwarz                MailUser
+Jeffry Schwartz         MailUser
+FirstGraphApiPermission MailUser
+
+
+PS C:\Users\JEF-user1> Get-RoleGroupMember -Identity "eDiscoveryManager"
+PS C:\Users\JEF-user1> Add-eDiscoveryCaseAdmin -User "e78db90b-64ff-43e9-bfa5-75e5945cebc9"
+PS C:\Users\JEF-user1> Get-eDiscoveryCaseAdmin
+>>
+
+Name                                 RecipientType
+----                                 -------------
+Sith Admin                           MailUser
+Jeffry Schwartz                      MailUser
+e78db90b-64ff-43e9-bfa5-75e5945cebc9 User
