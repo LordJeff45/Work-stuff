@@ -1,0 +1,46 @@
+#If authentication fails due to "Unsupported browser" error, try this 
+
+#Outside Powershell ISE, run these:
+
+
+Import-Module ExchangeOnlineManagement 
+# Get the latest installed ExchangeOnlineManagement module
+$exoModule = Get-Module ExchangeOnlineManagement -ListAvailable |
+             Sort-Object Version -Descending |
+             Select-Object -First 1
+# Build path to the netFramework folder under this module
+$msalPath = Join-Path (Split-Path $exoModule.Path -Parent) 'netFramework'
+# OPTIONAL: Verify which DLLs are there
+$msalPath
+Get-ChildItem $msalPath
+# Load MSAL assemblies
+Add-Type -Path (Join-Path $msalPath 'Microsoft.IdentityModel.Abstractions.dll')
+Add-Type -Path (Join-Path $msalPath 'Microsoft.Identity.Client.dll')
+# Build the MSAL application object
+$clientId = "fb78d390-0c51-40cd-8e17-fdbfab77341b"
+$scopes   = [string[]]"https://outlook.office365.com/.default"
+$application = [Microsoft.Identity.Client.PublicClientApplicationBuilder]::Create($clientId).
+    WithDefaultRedirectUri().
+    Build()
+# Show that MSAL loaded correctly
+$application
+$application.GetType().FullName
+
+
+# After MSAL loading logic (same as above)
+$result = $application.AcquireTokenInteractive($scopes).ExecuteAsync().Result
+$result.AccessToken     | Set-Content "$env:TEMP\exo.token"
+$result.Account.Username | Set-Content "$env:TEMP\exo.user"
+
+
+#Get back to ISE, run this:
+
+
+Import-Module ExchangeOnlineManagement
+$token = Get-Content "$env:TEMP\exo.token"
+$user  = Get-Content "$env:TEMP\exo.user"
+Connect-ExchangeOnline -AccessToken $token -UserPrincipalName $user
+Connect-IPPSSession    -AccessToken $token -UserPrincipalName $user -EnableSearchOnlySession
+
+
+
